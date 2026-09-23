@@ -107,6 +107,12 @@ img { display: block; max-width: 100%; }
 .faq-list details[open] summary span { transform: rotate(45deg); }
 .faq-list details p { margin: -7px 50px 27px 0; color: var(--muted); font-size: 14px; line-height: 1.8; }
 
+.region-link-section { display: grid; grid-template-columns: .8fr 1.2fr; gap: 8vw; padding: 110px clamp(24px, 8vw, 140px); background: var(--paper-deep); }
+.region-link-section h2 { margin: 0; font: 700 clamp(37px, 4.4vw, 66px)/1.28 var(--display); }
+.region-links { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--ink); border-left: 1px solid var(--line); }
+.region-links a { min-height: 72px; padding: 12px; display: flex; align-items: center; justify-content: center; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); font-size: 14px; font-weight: 700; }
+.region-links a:hover { color: white; background: var(--blue); }
+
 .consult-section { display: grid; grid-template-columns: 1fr 1fr; gap: 10vw; padding: 120px clamp(24px, 8vw, 140px); background: var(--lime); }
 .consult-copy .section-number { color: var(--blue); }
 .consult-copy > p:last-child { margin-top: 35px; line-height: 1.8; }
@@ -156,10 +162,12 @@ img { display: block; max-width: 100%; }
   .process-grid { grid-template-columns: 1fr 1fr; margin-top: 50px; }
   .process-grid li:nth-child(3) { border-left: 0; border-top: 1px solid var(--line); }
   .process-grid li:nth-child(4) { border-top: 1px solid var(--line); }
-  .review-section, .faq-section, .consult-section { grid-template-columns: 1fr; gap: 55px; }
+  .review-section, .faq-section, .consult-section, .region-link-section { grid-template-columns: 1fr; gap: 55px; }
   .review-section { padding: 85px 24px; }
   .review-intro { position: static; }
   .consult-section { padding: 80px 24px 100px; }
+  .region-link-section { padding: 80px 24px; }
+  .region-links { grid-template-columns: repeat(2, 1fr); }
   .site-footer { grid-template-columns: 1fr; gap: 22px; padding-bottom: 100px; }
   .floating-cta { display: flex; align-items: center; justify-content: center; position: fixed; z-index: 15; left: 16px; right: 16px; bottom: 14px; height: 55px; color: white; background: var(--red); box-shadow: 0 8px 25px rgba(0,0,0,.25); font-weight: 800; }
   .floating-cta span { margin-right: 6px; color: var(--lime); }
