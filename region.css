@@ -14,6 +14,7 @@ a { color: inherit; text-decoration: none; }
 .region-hero::after { content: attr(data-region); position: absolute; right: 3vw; bottom: -4vw; color: rgba(255,255,255,.08); font: 700 clamp(110px, 18vw, 270px)/1 var(--display); white-space: nowrap; }
 .eyebrow { margin: 0 0 22px; color: var(--lime); font-size: 12px; font-weight: 800; letter-spacing: 1.6px; }
 .region-hero h1 { max-width: 900px; margin: 0; font: 700 clamp(44px, 6.5vw, 88px)/1.22 var(--display); }
+.region-hero.local-hero h1 { font-size: clamp(38px, 5.2vw, 72px); }
 .region-hero h1 em { color: var(--lime); font-style: normal; }
 .region-hero > p:not(.eyebrow) { max-width: 600px; margin: 28px 0 0; font-size: 17px; line-height: 1.8; }
 .hero-actions { display: flex; align-items: center; gap: 24px; margin-top: 36px; position: relative; z-index: 1; }
@@ -35,6 +36,9 @@ a { color: inherit; text-decoration: none; }
 .area-list { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 38px; }
 .area-list a { padding: 12px 16px; border: 1px solid rgba(255,255,255,.35); font-size: 13px; }
 .area-list a:hover, .area-list a[aria-current="page"] { color: var(--ink); background: var(--lime); border-color: var(--lime); }
+.local-area-section { color: var(--ink); background: var(--paper); border-top: 1px solid var(--line); }
+.local-area-section .section-label { color: var(--red); }
+.local-area-section .area-list a { border-color: var(--line); }
 .region-cta { padding: 95px 24px; text-align: center; background: var(--lime); }
 .region-cta h2 { margin: 0 0 27px; font: 700 clamp(34px, 4vw, 56px)/1.4 var(--display); }
 .region-cta .phone-button { color: white; background: var(--ink); }
@@ -46,6 +50,7 @@ a { color: inherit; text-decoration: none; }
   .header-phone { display: none; }
   .region-hero { min-height: 620px; padding: 75px 24px 130px; }
   .region-hero h1 { font-size: 43px; }
+  .region-hero.local-hero h1 { font-size: 34px; }
   .region-hero > p:not(.eyebrow) { font-size: 15px; }
   .hero-actions { align-items: flex-start; flex-direction: column; }
   .intro { grid-template-columns: 1fr; gap: 35px; }
