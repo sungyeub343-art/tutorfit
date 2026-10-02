@@ -47,9 +47,10 @@ document.querySelectorAll(".program-tab").forEach((tab) => {
 });
 
 const consultForm = document.querySelector(".consult-form");
-consultForm.addEventListener("submit", (event) => {
+consultForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   const status = consultForm.querySelector(".form-status");
+  const submitButton = consultForm.querySelector('button[type="submit"]');
 
   if (!consultForm.checkValidity()) {
     consultForm.reportValidity();
@@ -57,12 +58,25 @@ consultForm.addEventListener("submit", (event) => {
     return;
   }
 
-  const entry = Object.fromEntries(new FormData(consultForm).entries());
-  entry.createdAt = new Date().toISOString();
-  const savedEntries = JSON.parse(localStorage.getItem("sangsang-consultations") || "[]");
-  savedEntries.push(entry);
-  localStorage.setItem("sangsang-consultations", JSON.stringify(savedEntries));
+  submitButton.disabled = true;
+  submitButton.textContent = "전송 중...";
+  status.textContent = "";
 
-  consultForm.reset();
-  status.textContent = "상담 내용이 이 기기에 임시 저장되었습니다.";
+  try {
+    const response = await fetch(consultForm.action, {
+      method: "POST",
+      body: new FormData(consultForm),
+      headers: { Accept: "application/json" }
+    });
+
+    if (!response.ok) throw new Error("Consultation submission failed");
+
+    consultForm.reset();
+    status.textContent = "무료 상담이 신청되었습니다. 확인 후 연락드리겠습니다.";
+  } catch {
+    status.textContent = "전송하지 못했습니다. 잠시 후 다시 시도해 주세요.";
+  } finally {
+    submitButton.disabled = false;
+    submitButton.textContent = "무료 상담 신청하기";
+  }
 });
