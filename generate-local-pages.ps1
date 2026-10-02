@@ -85,6 +85,7 @@ foreach ($districtSlug in $districts.Keys) {
   <meta name="description" content="부산 $districtName $areaName 초·중·고 학생을 위한 1:1 수학과외 체험수업 안내입니다.">
   <title>부산 $districtName $areaName 수학과외 체험수업 안내 | 부산 수학과외</title>
   <link rel="canonical" href="$canonical">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../../../region.css">
 </head>
 <body>

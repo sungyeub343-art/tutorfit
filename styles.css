@@ -21,7 +21,7 @@ img { display: block; max-width: 100%; }
 
 .site-header { height: 76px; padding: 0 clamp(24px, 5vw, 80px); display: flex; align-items: center; gap: 48px; background: rgba(245, 241, 232, .94); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 20; backdrop-filter: blur(12px); }
 .brand { display: inline-flex; align-items: center; gap: 10px; font-family: var(--display); font-size: 22px; font-weight: 700; white-space: nowrap; }
-.brand-mark { display: grid; place-items: center; width: 35px; aspect-ratio: 1; color: var(--paper); background: var(--red); font-size: 17px; }
+.brand-mark { display: grid; place-items: center; width: 35px; aspect-ratio: 1; overflow: hidden; color: transparent; background: var(--red) url("/favicon.svg") center/cover no-repeat; font-size: 0; }
 .main-nav { display: flex; gap: 32px; margin-left: auto; font-size: 14px; font-weight: 600; }
 .main-nav a { padding: 9px 0; border-bottom: 2px solid transparent; }
 .main-nav a:hover { border-color: var(--red); }
