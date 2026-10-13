@@ -14,7 +14,33 @@
   <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@700&family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body class="region-picker-open">
+  <div class="region-picker" role="dialog" aria-modal="true" aria-labelledby="region-picker-title" aria-describedby="region-picker-description">
+    <div class="region-picker-panel">
+      <button class="region-picker-close" type="button" aria-label="지역 선택 창 닫기">×</button>
+      <p class="region-picker-label">REGION SELECT</p>
+      <h2 id="region-picker-title">어느 지역의<br>수학과외를 찾으시나요?</h2>
+      <p id="region-picker-description">시·군·구를 선택하면 해당 지역 안내로 바로 이동합니다.</p>
+      <div class="region-picker-grid">
+        <a href="busan/jung-gu/"><span>01</span><strong>중구</strong><i aria-hidden="true">↗</i></a>
+        <a href="busan/seo-gu/"><span>02</span><strong>서구</strong><i aria-hidden="true">↗</i></a>
+        <a href="busan/dong-gu/"><span>03</span><strong>동구</strong><i aria-hidden="true">↗</i></a>
+        <a href="busan/yeongdo-gu/"><span>04</span><strong>영도구</strong><i aria-hidden="true">↗</i></a>
+        <a href="busan/busanjin-gu/"><span>05</span><strong>부산진구</strong><i aria-hidden="true">↗</i></a>
+        <a href="busan/dongnae-gu/"><span>06</span><strong>동래구</strong><i aria-hidden="true">↗</i></a>
+        <a href="busan/nam-gu/"><span>07</span><strong>남구</strong><i aria-hidden="true">↗</i></a>
+        <a href="busan/buk-gu/"><span>08</span><strong>북구</strong><i aria-hidden="true">↗</i></a>
+        <a href="busan/haeundae-gu/"><span>09</span><strong>해운대구</strong><i aria-hidden="true">↗</i></a>
+        <a href="busan/saha-gu/"><span>10</span><strong>사하구</strong><i aria-hidden="true">↗</i></a>
+        <a href="busan/geumjeong-gu/"><span>11</span><strong>금정구</strong><i aria-hidden="true">↗</i></a>
+        <a href="busan/gangseo-gu/"><span>12</span><strong>강서구</strong><i aria-hidden="true">↗</i></a>
+        <a href="busan/yeonje-gu/"><span>13</span><strong>연제구</strong><i aria-hidden="true">↗</i></a>
+        <a href="busan/suyeong-gu/"><span>14</span><strong>수영구</strong><i aria-hidden="true">↗</i></a>
+        <a href="busan/sasang-gu/"><span>15</span><strong>사상구</strong><i aria-hidden="true">↗</i></a>
+        <a href="busan/gijang-gun/"><span>16</span><strong>기장군</strong><i aria-hidden="true">↗</i></a>
+      </div>
+    </div>
+  </div>
   <header class="site-header">
     <a class="brand" href="#top" aria-label="부산 수학과외 홈">
       <span class="brand-mark" aria-hidden="true">想</span>

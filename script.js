@@ -16,6 +16,21 @@ const programs = {
   }
 };
 
+const regionPicker = document.querySelector(".region-picker");
+const regionPickerClose = document.querySelector(".region-picker-close");
+
+const closeRegionPicker = () => {
+  regionPicker.hidden = true;
+  document.body.classList.remove("region-picker-open");
+  document.querySelector(".brand").focus();
+};
+
+regionPickerClose.addEventListener("click", closeRegionPicker);
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && !regionPicker.hidden) closeRegionPicker();
+});
+regionPickerClose.focus();
+
 const menuButton = document.querySelector(".menu-button");
 const navigation = document.querySelector(".main-nav");
 
