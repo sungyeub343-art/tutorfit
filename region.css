@@ -44,7 +44,55 @@ a { color: inherit; text-decoration: none; }
 .region-cta .phone-button { color: white; background: var(--ink); }
 .region-footer { padding: 40px clamp(24px, 6vw, 90px); display: flex; justify-content: space-between; gap: 30px; color: rgba(255,255,255,.55); background: var(--ink); font-size: 12px; }
 .floating-phone { display: none; }
+.breadcrumb { padding: 13px clamp(22px, 6vw, 90px); color: var(--muted); border-bottom: 1px solid var(--line); font-size: 12px; }
+.breadcrumb a:hover { color: var(--red); }
+.breadcrumb [aria-current="page"] { color: var(--ink); font-weight: 700; }
+.grade-section, .year-section, .matrix-section, .faq-block { padding: 100px clamp(24px, 9vw, 150px); border-top: 1px solid var(--line); }
+.grade-section { background: #fbf8f1; }
+.grade-section h2, .year-section h2, .matrix-section h2, .faq-block h2 { margin: 0; font: 700 clamp(32px, 3.6vw, 52px)/1.35 var(--display); }
+.grade-grid { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 55px; border-top: 1px solid var(--ink); border-bottom: 1px solid var(--ink); }
+.grade-card { display: flex; flex-direction: column; padding: 32px 28px; scroll-margin-top: 20px; }
+.grade-card + .grade-card { border-left: 1px solid var(--line); }
+.grade-years { color: var(--blue); font-size: 12px; font-weight: 800; letter-spacing: .5px; }
+.grade-card h3 { margin: 16px 0 14px; font: 700 25px/1.35 var(--display); }
+.grade-card p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.8; }
+.tag-list { display: flex; flex-wrap: wrap; gap: 6px; margin: 22px 0 0; padding: 0; list-style: none; }
+.tag-list li { padding: 6px 10px; background: #eaf1ee; font-size: 12px; font-weight: 600; }
+.more-link { align-self: flex-start; margin-top: auto; padding: 24px 0 3px; border-bottom: 2px solid var(--red); font-size: 13px; font-weight: 800; }
+.point-grid { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 70px; border-top: 1px solid var(--ink); }
+.point-grid article { padding: 28px; border-bottom: 1px solid var(--line); }
+.point-grid article:not(:nth-child(3n+1)) { border-left: 1px solid var(--line); }
+.point-grid span { color: var(--blue); font-size: 11px; font-weight: 800; }
+.point-grid h3 { margin: 18px 0 12px; font: 700 22px var(--display); }
+.point-grid p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.8; }
+.year-section { background: #fbf8f1; }
+.year-list { margin-top: 45px; border-top: 1px solid var(--ink); }
+.year-row { display: grid; grid-template-columns: minmax(220px, .8fr) 2fr; gap: 30px; align-items: baseline; padding: 24px 0; border-bottom: 1px solid var(--line); }
+.year-row h3 { margin: 0; font: 700 21px var(--display); }
+.year-row p { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.8; }
+.matrix { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0 28px; margin-top: 45px; }
+.matrix-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; padding: 16px 0; border-bottom: 1px solid var(--line); font-size: 13px; }
+.matrix-row a:not(.matrix-head) { color: var(--muted); }
+.matrix-row a:hover { color: var(--red); }
+.matrix-head { flex-basis: 100%; font-weight: 800; }
+.faq-items { margin-top: 40px; border-top: 1px solid var(--ink); }
+.faq-items details { border-bottom: 1px solid var(--line); }
+.faq-items summary { padding: 22px 0; cursor: pointer; font-weight: 700; }
+.faq-items details p { margin: 0 0 22px; color: var(--muted); line-height: 1.8; }
+@media (max-width: 960px) {
+  .grade-grid, .point-grid { grid-template-columns: 1fr; }
+  .grade-card + .grade-card { border-top: 1px solid var(--line); border-left: 0; }
+  .point-grid article:not(:nth-child(3n+1)) { border-left: 0; }
+  .matrix { grid-template-columns: repeat(2, 1fr); }
+}
 @media (max-width: 720px) {
+  .breadcrumb { padding: 11px 24px; }
+  .grade-section, .year-section, .matrix-section, .faq-block { padding: 75px 24px; }
+  .grade-card { padding: 28px 0; }
+  .point-grid { margin-top: 45px; }
+  .point-grid article { padding: 24px 0; }
+  .year-row { grid-template-columns: 1fr; gap: 8px; }
+  .matrix { grid-template-columns: 1fr; }
   .region-header { height: 64px; }
   .category-link { margin-left: auto; font-size: 12px; }
   .header-phone { display: none; }

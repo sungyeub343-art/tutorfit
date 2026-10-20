@@ -13,3 +13,10 @@ python -m http.server 4173
 ```
 
 브라우저에서 `http://127.0.0.1:4173`을 엽니다.
+## 지역·학년별 페이지 생성
+
+`busan/` 아래 지역별·학년별 페이지와 `sitemap.xml`은 `generate_pages.py`로 만듭니다. 문구나 지역을 바꿀 때는 생성된 HTML이 아니라 이 스크립트를 수정한 뒤 다시 실행합니다.
+
+```powershell
+python generate_pages.py
+```
