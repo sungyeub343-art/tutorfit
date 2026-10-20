@@ -35,7 +35,8 @@ body.region-picker-open { overflow: hidden; }
 .region-picker-grid strong { font: 700 17px var(--display); }
 .region-picker-grid i { color: #68847c; font-size: 16px; font-style: normal; }
 .region-picker-grid a:hover i { color: white; }
-.region-picker[hidden] { display: none; }
+.region-picker[hidden], .region-picker-seen .region-picker { display: none; }
+.region-picker-seen body.region-picker-open { overflow: visible; }
 
 .site-header { height: 76px; padding: 0 clamp(24px, 5vw, 80px); display: flex; align-items: center; gap: 48px; background: rgba(245, 241, 232, .94); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 20; backdrop-filter: blur(12px); }
 .brand { display: inline-flex; align-items: center; gap: 10px; font-family: var(--display); font-size: 22px; font-weight: 700; white-space: nowrap; }

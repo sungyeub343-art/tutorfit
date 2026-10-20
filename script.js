@@ -29,7 +29,18 @@ regionPickerClose.addEventListener("click", closeRegionPicker);
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape" && !regionPicker.hidden) closeRegionPicker();
 });
-regionPickerClose.focus();
+let regionPickerSeen = false;
+try {
+  regionPickerSeen = Boolean(sessionStorage.getItem("regionPickerSeen"));
+  sessionStorage.setItem("regionPickerSeen", "1");
+} catch {}
+
+if (regionPickerSeen) {
+  regionPicker.hidden = true;
+  document.body.classList.remove("region-picker-open");
+} else {
+  regionPickerClose.focus();
+}
 
 const menuButton = document.querySelector(".menu-button");
 const navigation = document.querySelector(".main-nav");
