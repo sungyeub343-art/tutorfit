@@ -60,38 +60,3 @@ document.querySelectorAll(".program-tab").forEach((tab) => {
     panel.querySelector("ul").innerHTML = selected.items.map((item) => `<li>${item}</li>`).join("");
   });
 });
-
-const consultForm = document.querySelector(".consult-form");
-consultForm.addEventListener("submit", async (event) => {
-  event.preventDefault();
-  const status = consultForm.querySelector(".form-status");
-  const submitButton = consultForm.querySelector('button[type="submit"]');
-
-  if (!consultForm.checkValidity()) {
-    consultForm.reportValidity();
-    status.textContent = "필수 항목을 확인해 주세요.";
-    return;
-  }
-
-  submitButton.disabled = true;
-  submitButton.textContent = "전송 중...";
-  status.textContent = "";
-
-  try {
-    const response = await fetch(consultForm.action, {
-      method: "POST",
-      body: new FormData(consultForm),
-      headers: { Accept: "application/json" }
-    });
-
-    if (!response.ok) throw new Error("Consultation submission failed");
-
-    consultForm.reset();
-    status.textContent = "무료 상담이 신청되었습니다. 확인 후 연락드리겠습니다.";
-  } catch {
-    status.textContent = "전송하지 못했습니다. 잠시 후 다시 시도해 주세요.";
-  } finally {
-    submitButton.disabled = false;
-    submitButton.textContent = "무료 상담 신청하기";
-  }
-});
