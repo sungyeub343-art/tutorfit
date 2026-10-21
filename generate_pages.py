@@ -179,7 +179,9 @@ def write_page(path, *, title, description, crumbs, category, eyebrow, h1, h1_em
   <meta property="og:title" content="{title}">
   <meta property="og:description" content="{description}">
   <meta property="og:url" content="{url}">
+  <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="stylesheet" href="/region.css">
 {jsonld(breadcrumb_ld(crumbs))}{jsonld(faq_ld(faqs))}</head>
 <body>
