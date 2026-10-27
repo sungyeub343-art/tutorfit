@@ -135,6 +135,9 @@ body.region-picker-open { overflow: hidden; }
 .grade-links p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.8; }
 .grade-links strong { align-self: flex-start; margin-top: auto; padding: 22px 0 3px; border-bottom: 2px solid var(--red); font-size: 13px; }
 .grade-links a:hover h3 { color: var(--red); }
+.grade-detail-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 36px; }
+.grade-detail-links a { padding: 10px 14px; border: 1px solid var(--line); font-size: 13px; font-weight: 600; }
+.grade-detail-links a:hover { color: white; background: var(--ink); border-color: var(--ink); }
 .region-link-section { display: grid; grid-template-columns: .8fr 1.2fr; gap: 8vw; padding: 110px clamp(24px, 8vw, 140px); background: var(--paper-deep); }
 .region-link-section h2 { margin: 0; font: 700 clamp(37px, 4.4vw, 66px)/1.28 var(--display); }
 .region-links { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--ink); border-left: 1px solid var(--line); }
