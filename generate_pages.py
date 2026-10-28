@@ -3,11 +3,13 @@
 사용법: python generate_pages.py
 """
 import json
+import math
 import re
 from datetime import date
 from pathlib import Path
 
 from keyword_pages import GRADE_PAGES, GUIDE_PAGES
+from unit_pages import UNIT_PAGES
 
 SITE = "https://tutorfit.kr"
 PHONE = "010-2928-3614"
@@ -137,6 +139,7 @@ GRADES = {
 SCHOOLS = json.loads((ROOT / "data" / "schools-busan.json").read_text(encoding="utf-8"))
 SCHOOL_SOURCE = "전국초중등학교위치표준데이터(2026-10-26 기준)"
 SCHOOL_LEVELS = {"elementary": "초등학교", "middle": "중학교", "high": "고등학교"}
+SCHOOL_PATH = {s["id"]: f"/busan/{gu}/schools/{s['id']}/" for gu, levels in SCHOOLS.items() for lst in levels.values() for s in lst}
 # 행정동 이름이 법정동과 다르게 묶인 곳
 DONG_ALIASES = {"금사회동동": ["금사동", "회동동"], "청룡노포동": ["청룡동", "노포동"], "남항동": ["남항동", "대교동", "대평동"],
                 "수민동": ["수안동", "낙민동"], "복산동": ["복천동", "칠산동"], "선두구동": ["선동", "두구동"],
@@ -247,7 +250,7 @@ def school_section(r, schools, levels, title, copy):
         names = [s["name"] for s in schools[key]]
         if not names:
             continue
-        items = "".join(f"<li>{n}</li>" for n in names)
+        items = "".join(f'<li><a href="{SCHOOL_PATH[s["id"]]}">{s["name"]}</a></li>' for s in schools[key])
         cols.append(f'<div class="school-col"><h3>{r} {SCHOOL_LEVELS[key]} <span>{len(names)}곳</span></h3><ul class="school-list">{items}</ul></div>')
     if not cols:
         return None
@@ -336,6 +339,7 @@ def keyword_pages():
                 f'<section id="guide" class="region-content"><div class="intro"><div><p class="section-label">{p["short"]}</p><h2>{n} 수학,<br>무엇을 배우나요?</h2></div><p class="intro-copy">{p["intro"]}</p></div><div class="point-grid">{numbered(p["units"])}</div></section>',
                 f'<section class="year-section"><p class="section-label">STUCK POINTS</p><h2>{n} 수학, 자주 막히는 지점</h2><div class="year-list">{rows(p["stuck"])}</div></section>',
                 f'<section class="region-content"><div class="intro"><div><p class="section-label">STUDY PLAN</p><h2>{n} 수학공부 계획</h2></div><p class="intro-copy">학교 진도와 시험 일정에 맞춰 수업과 과제, 복습 주기를 정합니다. 아래는 일반적인 흐름이며 체험수업 후 학생에 맞게 조정합니다.</p></div><div class="year-list">{rows(p["plan"])}</div></section>',
+                links_section("BY UNIT", f"{n} 단원별 수학과외", [(f"{u['name']} 수학과외", f"/units/{u['slug']}/", False) for u in UNIT_PAGES if p["slug"] in u["grades"]] or [(f"{u['name']} 수학과외", f"/units/{u['slug']}/", False) for u in UNIT_PAGES if u["level"] == p["level"]]),
                 links_section("BY GRADE", "학년별 수학과외 더 보기", [(t, h, h == path) for t, h, _ in grade_nav], light=True),
                 links_section("BUSAN AREAS", f"부산 구·군별 {g['label']} 수학과외", gu_level_links(p["level"])),
             ],
@@ -393,6 +397,110 @@ def keyword_pages():
     return pages
 
 
+def unit_pages():
+    pages = []
+    crumbs = [("홈", "/"), ("단원별 수학과외", "/units/")]
+    nav = [(f"{u['name']}", f"/units/{u['slug']}/", False) for u in UNIT_PAGES]
+    grade_names = {q["slug"]: q["name"] for q in GRADE_PAGES}
+    for u in UNIT_PAGES:
+        path = f"/units/{u['slug']}/"
+        n = u["name"]
+        label = GRADES[u["level"]]["label"]
+        related = [(f"{grade_names[gs]} 수학과외", f"/grade/{gs}/", False) for gs in u["grades"]]
+        pages.append(write_page(
+            path,
+            title=f"부산 {n} 수학과외 | {u['grade']} {n} 개념·실수 보완 1:1",
+            description=f"부산 {n} 수학과외. {u['intro'].split('.')[0]}. {n} 핵심 개념, 자주 하는 실수, 수업 순서를 확인하세요. 상담 {PHONE}.",
+            crumbs=crumbs + [(n, path)], category=("단원별 수학과외", "/units/"),
+            eyebrow=f"BUSAN · {u['grade']} · {u['slug'].upper()}", h1=n, h1_em="수학과외 안내",
+            hero_copy=f"{u['grade']} 학생이 {n} 단원에서 막히는 지점을 찾아 1:1로 보완합니다. 개념 이해부터 학교 시험 유형까지 함께 준비합니다.",
+            hero_label=n, local_hero=False,
+            sections=[
+                f'<section id="guide" class="region-content"><div class="intro"><div><p class="section-label">{u["grade"]} KEY CONCEPTS</p><h2>{n},<br>무엇을 배우나요?</h2></div><p class="intro-copy">{u["intro"]}</p></div><div class="point-grid">{numbered(u["concepts"])}</div></section>',
+                f'<section class="year-section"><p class="section-label">COMMON MISTAKES</p><h2>{n}에서 자주 하는 실수</h2><div class="year-list">{rows(u["mistakes"])}</div></section>',
+                f'<section class="region-content"><div class="intro"><div><p class="section-label">LESSON STEPS</p><h2>{n} 수업 순서</h2></div><p class="intro-copy">체험수업에서 풀이 과정을 확인한 뒤, 학생에게 필요한 단계부터 시작합니다.</p></div><div class="year-list">{rows(u["steps"])}</div></section>',
+                links_section("RELATED", f"{n} 관련 학년별 수학과외", related + [(f"부산 {label} 수학과외", f"/busan/{u['level']}/", False)], light=True),
+                links_section("BY UNIT", "다른 단원 수학과외", [(t, h, h == path) for t, h, _ in nav]),
+            ],
+            faqs=u["faq"] + common_faqs("부산")[1:], cta_region=f"부산 {n}"))
+    cards = "".join(
+        f'<a class="hub-card" href="/units/{u["slug"]}/"><span>{u["grade"]}</span><h3>{u["name"]} 수학과외</h3><p>{u["intro"].split(".")[0]}.</p></a>'
+        for u in UNIT_PAGES)
+    pages.append(write_page(
+        "/units/",
+        title="부산 단원별 수학과외 | 분수·방정식·함수·인수분해·삼각함수·미적분 1:1",
+        description=f"초등 분수·문장제, 중등 일차방정식·일차함수·인수분해·이차함수, 고등 방정식과 부등식·삼각함수·수열·미적분Ⅰ·확률과 통계까지 단원별 1:1 수학과외. 상담 {PHONE}.",
+        crumbs=crumbs, category=("부산 지역 안내", "/busan/"),
+        eyebrow="BUSAN · MATH BY UNIT", h1="부산 단원별", h1_em="수학과외 안내",
+        hero_copy="막히는 단원이 있다면 그 단원부터 해결합니다. 단원을 선택해 핵심 개념과 자주 하는 실수, 수업 순서를 확인하세요.",
+        hero_label="단원별", local_hero=False,
+        sections=[f'<section id="guide" class="grade-section"><p class="section-label">SELECT UNIT</p><h2>단원을 선택하세요.</h2><div class="hub-grid">{cards}</div></section>',
+                  links_section("BY GRADE", "학년별 수학과외", [(q["name"], f"/grade/{q['slug']}/", False) for q in GRADE_PAGES], light=True)],
+        faqs=common_faqs("부산"), cta_region="부산"))
+    return pages
+
+
+def distance_km(a, b):
+    lat1, lon1, lat2, lon2 = map(math.radians, (a["lat"], a["lon"], b["lat"], b["lon"]))
+    h = math.sin((lat2 - lat1) / 2) ** 2 + math.cos(lat1) * math.cos(lat2) * math.sin((lon2 - lon1) / 2) ** 2
+    return 6371 * 2 * math.asin(math.sqrt(h))
+
+
+SCHOOL_TITLE_TAIL = {"elementary": "초등 수학수업·기초수학", "middle": "중등 수학내신 대비", "high": "고등 수학내신·수능대비"}
+SCHOOL_EXAM_FAQ = {
+    "elementary": "학교 교과서 진도와 단원평가 일정을 확인해 개념과 연산, 서술형 풀이를 함께 준비합니다.",
+    "middle": "학교 교과서와 부교재, 시험 범위를 확인해 중간·기말고사를 준비합니다. 학생이 가진 이전 시험지가 있으면 출제 경향을 함께 분석합니다.",
+    "high": "학교 교과서와 부교재, 시험 범위를 확인해 내신을 준비하고, 학력평가·모의고사 일정에 맞춰 수능대비를 병행합니다. 이전 시험지가 있으면 출제 경향을 함께 분석합니다.",
+}
+
+
+def school_pages():
+    pages = []
+    every = [(slug, lv, s) for slug, levels in SCHOOLS.items() for lv, lst in levels.items() for s in lst]
+    for slug, lv, s in every:
+        gu, areas = DISTRICTS[slug]
+        g = GRADES[lv]
+        label = g["label"]
+        name = s["name"]
+        path = SCHOOL_PATH[s["id"]]
+        base = f"/busan/{slug}/"
+        admin = [(an, f"{base}{aslug}/") for aslug, an in areas if s["dong"] and s["dong"] in legal_dongs(an)]
+        nearby = sorted(((distance_km(s, o), o) for _, _, o in every if o["id"] != s["id"]), key=lambda x: x[0])[:8]
+        place = f"{gu} {s['dong']}" if s["dong"] else gu
+        info = [("학교급", SCHOOL_LEVELS[lv]), ("설립 구분", s["type"]), ("소재지", s["address"]), ("행정구역", f"부산광역시 {place}")]
+        if s.get("founded"):
+            info.append(("설립일", s["founded"]))
+        info_html = "".join(f"<div><dt>{k}</dt><dd>{v}</dd></div>" for k, v in info)
+        years = "".join(f'<div class="year-row"><h3>{name} {y} 수학</h3><p>{d}</p></div>' for y, d in g["years_detail"])
+        more = [(f"{an} 수학과외", href, False) for an, href in admin]
+        more += [(f"{gu} {label} 수학과외", f"{base}{lv}/", False), (f"{gu} 수학과외", base, False)]
+        more += [(f"{q['name']} 수학과외", f"/grade/{q['slug']}/", False) for q in GRADE_PAGES if q["level"] == lv]
+        more += [(f"{u['name']} 수학과외", f"/units/{u['slug']}/", False) for u in UNIT_PAGES if u["level"] == lv]
+        faqs = [
+            (f"{name} 학생도 수업할 수 있나요?", f"네. {name} 학생의 학년과 현재 실력, 학교 진도를 확인한 뒤 1:1로 수업합니다. {g['school_copy']}"),
+            (f"{name} 시험 범위에 맞춰 준비하나요?", SCHOOL_EXAM_FAQ[lv]),
+        ] + common_faqs(name)[1:]
+        pages.append(write_page(
+            path,
+            title=f"{name} 수학과외 | 부산 {gu} {SCHOOL_TITLE_TAIL[lv]} 1:1",
+            description=f"{name}({place}) 학생을 위한 1:1 {label} 수학과외. {g['school_copy']} 체험수업 상담 {PHONE}.",
+            crumbs=[("홈", "/"), ("부산", "/busan/"), (gu, base), (name, path)], category=(f"{gu} {label} 수학과외", f"{base}{lv}/"),
+            eyebrow=f"BUSAN {slug.upper()} · {g['eng']} MATH", h1=name, h1_em="수학과외 안내",
+            hero_copy=f"{name} 학생의 교과서 진도와 학교 시험 일정에 맞춘 1:1 {label} 수학수업입니다. 현재 실력을 진단하고 목표에 맞는 학습 계획을 함께 세웁니다.",
+            hero_label=re.sub(r"(초등|중|고등)학교$", lambda m: {"초등": "초", "중": "중", "고등": "고"}[m.group(1)], name), local_hero=len(name) > 7,
+            sections=[
+                f'<section id="guide" class="region-content"><div class="intro"><div><p class="section-label">SCHOOL INFO</p><h2>{name}<br>학교 정보</h2></div>'
+                f'<div><dl class="info-list">{info_html}</dl><p class="school-source">학교 정보 출처: {SCHOOL_SOURCE}</p></div></div></section>',
+                f'<section class="year-section"><p class="section-label">{g["years"]} MATH</p><h2>{name} 학년별 수학수업</h2>'
+                f'<p class="school-copy">{g["summary"].format(r=name)}</p><div class="year-list">{years}</div></section>',
+                links_section("NEARBY SCHOOLS", f"{name} 근처 학교 수학과외",
+                              [(f"{o['name']} · {d:.1f}km", SCHOOL_PATH[o["id"]], False) for d, o in nearby], light=True),
+                links_section(f"{slug.upper()} MATH", f"{gu} 수학과외 더 보기", more),
+            ],
+            faqs=faqs, cta_region=name))
+    return pages
+
+
 def main():
     pages = []
     busan_crumbs = [("홈", "/"), ("부산", "/busan/")]
@@ -422,7 +530,8 @@ def main():
             f'<section class="matrix-section"><p class="section-label">AREA × GRADE</p><h2>구·군별 학년 수학과외 바로가기</h2><div class="matrix">{matrix}</div></section>',
             links_section("BY GRADE · GUIDE", "학년별 수학과외 · 학습 가이드",
                           [(q["name"] + " 수학과외", f"/grade/{q['slug']}/", False) for q in GRADE_PAGES]
-                          + [(q["keyword"], f"/guide/{q['slug']}/", False) for q in GUIDE_PAGES], light=True),
+                          + [(q["keyword"], f"/guide/{q['slug']}/", False) for q in GUIDE_PAGES]
+                          + [(u["name"] + " 수학과외", f"/units/{u['slug']}/", False) for u in UNIT_PAGES], light=True),
             process_section("부산"),
         ],
         faqs=common_faqs("부산"), cta_region="부산"))
@@ -488,6 +597,8 @@ def main():
                 faqs=common_faqs(dong), cta_region=dong))
 
     pages += keyword_pages()
+    pages += unit_pages()
+    pages += school_pages()
 
     def priority(p):
         return "0.9" if p == "/busan/" else "0.8" if p.count("/") == 3 else "0.7"

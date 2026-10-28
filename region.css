@@ -127,3 +127,8 @@ a { color: inherit; text-decoration: none; }
 .hub-card span { color: var(--blue); font-size: 11px; font-weight: 800; letter-spacing: .5px; }
 .hub-card h3 { margin: 16px 0 10px; font: 700 22px/1.35 var(--display); }
 .hub-card p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.75; }
+.info-list { margin: 0; border-top: 1px solid var(--ink); }
+.info-list div { display: grid; grid-template-columns: 120px 1fr; gap: 20px; padding: 16px 0; border-bottom: 1px solid var(--line); }
+.info-list dt { color: var(--muted); font-size: 13px; font-weight: 700; }
+.info-list dd { margin: 0; font-size: 15px; }
+.year-section .school-copy { margin-bottom: 10px; }
