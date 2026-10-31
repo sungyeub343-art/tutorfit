@@ -17,6 +17,9 @@ TEL = "tel:01029283614"
 BRAND = "부산 수학과외"
 LASTMOD = date.today().isoformat()
 ROOT = Path(__file__).resolve().parent
+OG_IMAGE = f"{SITE}/og-image.png"
+FONTS = "https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@700&family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap"
+PAGE_META = {}  # path -> (title, description), RSS 생성용
 
 DISTRICTS = {
     "jung-gu": ("중구", [
@@ -177,6 +180,7 @@ def common_faqs(r):
 
 def write_page(path, *, title, description, crumbs, category, eyebrow, h1, h1_em, hero_copy, hero_label, local_hero, sections, faqs, cta_region):
     url = SITE + path
+    PAGE_META[path] = (title, description)
     crumb_html = ' <span aria-hidden="true">›</span> '.join(
         f'<a href="{p}">{n}</a>' if i < len(crumbs) - 1 else f'<span aria-current="page">{n}</span>'
         for i, (n, p) in enumerate(crumbs))
@@ -197,9 +201,17 @@ def write_page(path, *, title, description, crumbs, category, eyebrow, h1, h1_em
   <meta property="og:title" content="{title}">
   <meta property="og:description" content="{description}">
   <meta property="og:url" content="{url}">
+  <meta property="og:image" content="{OG_IMAGE}">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="alternate" type="application/rss+xml" title="{BRAND}" href="{SITE}/rss.xml">
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="{FONTS}">
   <link rel="stylesheet" href="/region.css">
 {jsonld(breadcrumb_ld(crumbs))}{jsonld(faq_ld(faqs))}</head>
 <body>
@@ -551,7 +563,7 @@ def main():
         names = "·".join(n for _, n in areas[:4])
         pages.append(write_page(
             base,
-            title=f"부산 {gu} 수학과외 | 초등·중등·고등 1:1 수학수업·내신·수능대비",
+            title=f"부산 {gu} 수학과외 | 초·중·고 1:1 수학수업·내신·수능대비 무료 상담",
             description=f"부산 {gu} 수학과외 안내. {names} 등 {gu} 초등 기초수학, 중등 수학내신, 고등 수능대비·수능수학까지 1:1 맞춤 수학수업. 체험수업 상담 {PHONE}.",
             crumbs=gu_crumbs, category=("부산 지역 안내", "/busan/"),
             eyebrow=f"BUSAN {eng} · 1:1 MATH COACHING", h1=f"부산 {gu}", h1_em="수학과외 안내",
@@ -576,16 +588,18 @@ def main():
             near_txt = f" {dong} 외에도 {'·'.join(near)} 등 {gu} 인근 학생도 상담할 수 있습니다." if near else ""
             siblings = [(f"{gu} 전체", base, False)] + [(n, f"{base}{s}/", s == aslug) for s, n in areas]
             legal = list(dict.fromkeys(legal_dongs(dong)))
+            aka = [n for n in legal if n != dong]
+            aka_txt = f"({'·'.join(aka)})" if aka else ""
             nearby = {k: [s for s in SCHOOLS[slug][k] if s["dong"] in legal] for k in SCHOOL_LEVELS}
             near_schools = school_section(dong, nearby, SCHOOL_LEVELS, f"{dong} 인근 학교 수학과외",
                                           f"{'·'.join(legal)}에 있는 학교입니다. 이 학교 학생은 물론 {gu} 다른 학교 학생도 학교 진도와 시험 범위에 맞춰 1:1로 수업합니다.")
             pages.append(write_page(
                 path,
-                title=f"부산 {gu} {dong} 수학과외 | 초등·중등·고등 1:1 수학수업",
-                description=f"부산 {gu} {dong} 수학과외. 초등 기초수학·수학공부, 중등 수학내신, 고등 수능대비·수능수학까지 학년별 1:1 수학수업. 체험수업 상담 {PHONE}.",
+                title=f"{gu} {dong}{aka_txt} 수학과외 | 부산 초·중·고 1:1 수학수업 무료 상담",
+                description=f"부산 {gu} {dong}{aka_txt} 수학과외. 초등 기초수학·수학공부, 중등 수학내신, 고등 수능대비·수능수학까지 학년별 1:1 수학수업. 체험수업 상담 {PHONE}.",
                 crumbs=gu_crumbs + [(dong, path)], category=(f"{gu} 지역 안내", base),
                 eyebrow=f"BUSAN {aslug.upper()} · 1:1 MATH COACHING", h1=f"부산 {gu} {dong}", h1_em="수학과외 안내",
-                hero_copy=f"{dong} 초·중·고 학생의 개념 이해도와 풀이 습관을 진단하고, 목표에 맞는 1:1 수학수업을 설계합니다.",
+                hero_copy=f"{dong}{aka_txt} 초·중·고 학생의 개념 이해도와 풀이 습관을 진단하고, 목표에 맞는 1:1 수학수업을 설계합니다.",
                 hero_label=dong, local_hero=True,
                 sections=[
                     f'<section class="region-content"><div class="intro"><div><p class="section-label">{dong} MATH COACHING</p><h2>{dong} 학생에게 맞춘<br>1:1 수학수업</h2></div><p class="intro-copy">{intro}{near_txt}</p></div></section>',
@@ -609,7 +623,16 @@ def main():
     (ROOT / "sitemap.xml").write_text(
         '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "\n".join(entries) + "\n</urlset>\n",
         encoding="utf-8", newline="\n")
-    print(f"Generated {len(pages)} pages.")
+    rss_paths = [p for p in pages if "/schools/" not in p and not (p.startswith("/busan/") and p.count("/") == 4 and p.split("/")[3] not in GRADES)]
+    pub = date.today().strftime("%a, %d %b %Y 09:00:00 +0900")
+    items = "".join(
+        f"  <item><title>{PAGE_META[p][0]}</title><link>{SITE}{p}</link><guid>{SITE}{p}</guid><description>{PAGE_META[p][1]}</description><pubDate>{pub}</pubDate></item>\n"
+        for p in rss_paths)
+    (ROOT / "rss.xml").write_text(
+        f'<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0">\n<channel>\n  <title>{BRAND}</title>\n  <link>{SITE}/</link>\n'
+        f"  <description>부산 초등·중등·고등 1:1 수학과외. 지역별·학년별·단원별 수학수업 안내</description>\n  <language>ko</language>\n  <lastBuildDate>{pub}</lastBuildDate>\n"
+        + items + "</channel>\n</rss>\n", encoding="utf-8", newline="\n")
+    print(f"Generated {len(pages)} pages, rss {len(rss_paths)} items.")
 
 
 if __name__ == "__main__":
